@@ -7,8 +7,8 @@ openssl req -x509 -sha256 -days 3560 -nodes -newkey rsa:2048 -subj "/CN=ROOT-CA/
 
 openssl genrsa -out intermediateCA.key 2048
 
-
- intermediateCA_csr.conf 
+#create the following config file (intermediateCA_csr.conf )
+ 
 [ req ]
 default_bits = 2048
 prompt = no
@@ -30,10 +30,12 @@ subjectAltName = @alt_names
 [ alt_names ]
 DNS.1 = INTERMEDIATE-CA
 
+#create Certificate Signing Request(csr). It is a message sent from an applicant (an entity that is requesting a digital certificate) 
+#to a Certificate Authority (CA) to apply for a digital identity certificate.
 
 openssl req -new -key intermediateCA.key -out intermediateCA.csr -config intermediateCA_csr.conf
 
-intermediateCA_cert.conf 
+#create the following config file (intermediateCA_cert.conf  )
 
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=critical,CA:TRUE
@@ -44,13 +46,8 @@ subjectAltName = @alt_names
 DNS.1 = INTERMEDIATE-CA
 
 
-
- openssl x509 -req \
-    -in intermediateCA.csr \
-    -CA rootCA.crt -CAkey rootCA.key \
-    -CAcreateserial -out intermediateCA.crt \
-    -days 3649 \
-    -sha256 -extfile intermediateCA_cert.conf   
+#create intermidiate certificate (intermediateCA.crt)
+ openssl x509 -req -in intermediateCA.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out intermediateCA.crt -days 3649 -sha256 -extfile intermediateCA_cert.conf   
 
 
 
