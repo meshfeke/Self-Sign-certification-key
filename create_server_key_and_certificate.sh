@@ -1,4 +1,3 @@
-#!/bin/sh
 
 #  First run the create_root_and_intermediate_certs.sh if you haven't already
 #
@@ -10,14 +9,12 @@
 #  Arguments: $1 = hostname of server to create the cert for
 #             $2 = ip address of hostname to create the cert for
 
-create_server_private_key()
-{
+#create private key
     openssl genrsa -out $1.key 2048
-}
 
-create_server_csr_conf()
-{
-    cat > $1_csr.conf <<EOF
+
+#create config file($1_csr.conf )
+     
 [ req ]
 default_bits = 2048
 prompt = no
