@@ -10,7 +10,8 @@
 #             $2 = ip address of hostname to create the cert for
 
 #create private key
-    openssl genrsa -out $1.key 2048
+
+openssl genrsa -out $1.key 2048
 
 
 #create config file($1_csr.conf )
