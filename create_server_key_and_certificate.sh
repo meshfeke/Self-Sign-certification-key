@@ -1,11 +1,9 @@
 
 #  First run the create_root_and_intermediate_certs.sh if you haven't already
-#
 #  Run this to create a key and cert
 #  for a server with both
 #  TLS Web Server Authentication, TLS Web Client Authentication extended attributes
 #  signed by a test intermediate and root CA
-#
 #  Arguments: $1 = hostname of server to create the cert for
 #             $2 = ip address of hostname to create the cert for
 
