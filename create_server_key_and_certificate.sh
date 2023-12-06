@@ -37,17 +37,14 @@ subjectAltName = @alt_names
 DNS.1 = $1
 IP.1 =  $2
 
-EOF
-}
+#create Certificate Signing Request(csr). It is a message sent from an applicant (an entity that is requesting a digital certificate) 
+#to a Certificate Authority (CA) to apply for a digital identity certificate.
 
-create_server_csr()
-{
-    openssl req -new -key $1.key -out $1.csr -config $1_csr.conf
-}
+ openssl req -new -key $1.key -out $1.csr -config $1_csr.conf
 
-create_server_cert_conf()
-{
-    cat > $1_cert.conf <<EOF
+
+
+    #Create the ff config file ($1_cert.conf)
 
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
@@ -59,43 +56,15 @@ subjectAltName = @alt_names
 DNS.1 = $1
 IP.1 =  $2
 
-EOF
-}
-
-create_server_cert()
-{
-    openssl x509 -req \
-        -in $1.csr \
-        -CA intermediateCA.crt -CAkey intermediateCA.key \
-        -CAcreateserial -out $1.crt \
-        -days 730 \
-        -sha256 -extfile $1_cert.conf
-}
+#Creating certrification for our server
+openssl x509 -req -in $1.csr -CA intermediateCA.crt -CAkey intermediateCA.key -CAcreateserial -out $1.crt -days 730 -sha256 -extfile $1_cert.conf
 
 
-###
-# Main 
-###
-echo ""
-echo ""
-echo "Creating key and cert for $1 with IP address: $2..."
-echo ""
-echo ""
 
-create_server_private_key $1
-create_server_csr_conf $1 $2
-create_server_csr $1
-create_server_cert_conf $1 $2
-create_server_cert $1
 
-echo ""
-echo ""
-echo "Done."
-echo ""
-echo "You should have a $1.key and $1.crt"
-echo "The cert is in PEM format and the key is in "
-echo "  PKCS8 unencrypted format."
-echo ""
-echo "These certs are ONLY for testing"
-echo "  and should NOT be used in a production environment."
-echo ""
+#"You should have a $1.key and $1.crt"
+#"The cert is in PEM format and the key is in "
+#"  PKCS8 unencrypted format."
+# "These certs are ONLY for testing"
+#  and should NOT be used in a production environment."
+
