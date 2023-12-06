@@ -1,23 +1,14 @@
-#!/bin/sh
+#To generate the rootCA.crt and rootCA.key files, you need to follow a series of steps to create your own Certificate Authority (CA). Here's a step-by-step guide:
 
-create_root_pair()
-{
-    openssl req -x509 \
-            -sha256 -days 3560 \
-            -nodes \
-            -newkey rsa:2048 \
-            -subj "/CN=ROOT-CA/C=US/ST=Minnesota/L=Bloomington/O=TEST-CA/OU=CERTS" \
-            -keyout rootCA.key -out rootCA.crt 
-}
+openssl req -x509 -sha256 -days 3560 -nodes -newkey rsa:2048 -subj "/CN=ROOT-CA/C=US/ST=Minnesota/L=Bloomington/O=TEST-CA/OU=CERTS" -keyout rootCA.key -out rootCA.crt 
 
-create_intermediate_private_key()
-{
-    openssl genrsa -out intermediateCA.key 2048
-}
+#Generate Root Key (intermediateCA.key.key)
+#Use the following OpenSSL command to generate a private key for your root CA. You will be prompted to enter a passphrase.
 
-create_intermediate_csr_conf()
-{
-    cat > intermediateCA_csr.conf <<EOF
+openssl genrsa -out intermediateCA.key 2048
+
+
+ intermediateCA_csr.conf 
 [ req ]
 default_bits = 2048
 prompt = no
@@ -39,17 +30,10 @@ subjectAltName = @alt_names
 [ alt_names ]
 DNS.1 = INTERMEDIATE-CA
 
-EOF
-}
 
-create_intermediate_csr()
-{
-    openssl req -new -key intermediateCA.key -out intermediateCA.csr -config intermediateCA_csr.conf
-}
+openssl req -new -key intermediateCA.key -out intermediateCA.csr -config intermediateCA_csr.conf
 
-create_intermediate_cert_conf()
-{
-    cat > intermediateCA_cert.conf <<EOF
+intermediateCA_cert.conf 
 
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=critical,CA:TRUE
@@ -59,42 +43,21 @@ subjectAltName = @alt_names
 [alt_names]
 DNS.1 = INTERMEDIATE-CA
 
-EOF
-}
 
-create_intermediate_cert()
-{
+
  openssl x509 -req \
     -in intermediateCA.csr \
     -CA rootCA.crt -CAkey rootCA.key \
     -CAcreateserial -out intermediateCA.crt \
     -days 3649 \
     -sha256 -extfile intermediateCA_cert.conf   
-}
 
 
-###
-# Main
-###
-echo ""
-echo ""
-echo "Creating root and intermediate CA's..."
-echo ""
-echo ""
 
-create_root_pair
-create_intermediate_private_key
-create_intermediate_csr_conf
-create_intermediate_csr
-create_intermediate_cert_conf
-create_intermediate_cert
 
-echo ""
-echo ""
-echo "Done."
-echo "You should have a rootCA.key, rootCA.crt"
-echo "  intermediateCA.key and intermediateCA.crt."
-echo "These certs are ONLY for testing and signing "
-echo "  other test certs and should NOT be used"
-echo "  in a production environment."
-echo ""
+#You should have a rootCA.key, rootCA.crt"
+#intermediateCA.key and intermediateCA.crt."
+#These certs are ONLY for testing and signing "
+#other test certs and should NOT be used"
+#in a production environment."
+
